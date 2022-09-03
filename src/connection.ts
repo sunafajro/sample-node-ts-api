@@ -2,11 +2,7 @@ import pgPromise from "pg-promise";
 
 const pg = pgPromise({});
 
-const dbHost = process.env.DB_HOST;
-const dbPort = process.env.DB_PORT;
-const dbName = process.env.DB_NAME;
-const dbUser = process.env.DB_USER;
-const dbPass = process.env.DB_PASS;
+const {dbHost, dbPort, dbName, dbUser, dbPass } = process.env;
 
 if (!dbName || !dbPort || !dbName || !dbUser || !dbPass) {
   console.log("No database config defined.");
