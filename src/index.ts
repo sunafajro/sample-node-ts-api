@@ -2,7 +2,7 @@ import * as dotenv from "dotenv";
 import express, { Express } from "express";
 import cors from "cors";
 import helmet from "helmet";
-import * as HomeController from "./controllers/HomeController";
+import * as SiteController from "./controllers/SiteController";
 
 dotenv.config();
 
@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.use(express.json());
 
-app.use("", HomeController.default);
+app.use("", SiteController.default);
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
