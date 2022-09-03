@@ -4,8 +4,8 @@
   "description": "Simple API on nodejs/typescript/postgres",
   "main": "index.js",
   "scripts": {
-    "start:prod": "node ./dist/index.js",
-    "start:dev": "nodemon ./src/index.ts",
+    "start": "nodemon ./src/index.ts",
+    "build": "rm -rf dist/ && tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Evgeny Belkin <sunafajro@gmail.com>",
