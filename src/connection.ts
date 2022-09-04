@@ -1,5 +1,6 @@
 import * as dotenv from "dotenv";
 import pgLib from "pg-promise";
+import { sql } from "./helpers/SqlFileHelper";
 
 const pgp = pgLib({});
 
@@ -32,33 +33,14 @@ export const connectDb = (): pgLib.IDatabase<{}, any> => {
   return db;
 };
 
+// TODO Нужен полноценный функционал для миграций
 export const migrate = async (db: pgLib.IDatabase<{}, any>): Promise<void> => {
-  const result: TableExists = await db.one(
-    "\
-    SELECT EXISTS (\
-      SELECT FROM information_schema.tables\
-      WHERE table_schema = 'public'\
-        AND table_name = 'day_weather'\
-    );\
-  "
-  );
+  const sqlTableDayWeatherExists = sql("./sql/tableDayWeatherExists.sql");
+  const result: TableExists = await db.one(sqlTableDayWeatherExists);
   if (!result.exists) {
     try {
-      // TODO Нужен полноценный функционал для миграций
-      await db.none("\
-        CREATE TABLE day_weather (\
-          id serial PRIMARY KEY,\
-          date date NOT NULL,\
-          lat float NOT NULL,\
-          lng float NOT NULL,\
-          address varchar(255) NOT NULL,\
-          temp_max float NOT NULL,\
-          temp_min float NOT NULL,\
-          temp float NOT NULL,\
-          created_at timestamp NOT NULL,\
-          updated_at timestamp NOT NULL\
-        )\
-      ");
+      const sqlTableDayWeatherCreate = sql("./sql/tableDayWeatherCreate.sql");
+      await db.none(sqlTableDayWeatherCreate);
     } catch (e) {
       console.log("Can't create weather table. Error: ", (e as Error).message);
       process.exit(1);

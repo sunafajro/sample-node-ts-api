@@ -1,0 +1,1 @@
+SELECT * FROM day_weather LIMIT ${limit} OFFSET ${offset};

@@ -1,0 +1,1 @@
+UPDATE day_weather SET temp_max=${tempMax}, temp_min=${tempMin}, temp=${temp}, updated_at=current_timestamp WHERE id=${id};

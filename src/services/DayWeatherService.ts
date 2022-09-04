@@ -1,5 +1,6 @@
 import pgLib from "pg-promise";
 import { connectDb } from "../connection";
+import { sql } from "../helpers/SqlFileHelper";
 
 const db: pgLib.IDatabase<{}, any> = connectDb();
 
@@ -29,7 +30,8 @@ export const getDaysWeather = async ({
   limit,
   offset,
 }: DaysWeatherRequestData): Promise<DayWeather[]> => {
-  return await db.any("SELECT * FROM day_weather LIMIT ${limit} OFFSET ${offset}", {
+  const sqlSelectDaysWeather = sql("./sql/selectDaysWeather.sql");
+  return await db.any(sqlSelectDaysWeather, {
     limit,
     offset,
   });
@@ -38,5 +40,8 @@ export const getDaysWeather = async ({
 export const getDayWeather = async ({
   date,
 }: DayWeatherRequestData): Promise<DayWeather | null> => {
-  return await db.oneOrNone("SELECT * FROM day_weather WHERE date=${date}", {date});
+  const sqlSelectDayWeather = sql("./sql/selectDayWeather.sql");
+  return await db.oneOrNone(sqlSelectDayWeather, {
+    date,
+  });
 };

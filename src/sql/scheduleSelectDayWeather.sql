@@ -1,0 +1,1 @@
+SELECT id from day_weather WHERE date=${date} AND address=${address} AND lat=${lat} AND lng=${lng};

@@ -1,6 +1,7 @@
 import schedule from "node-schedule";
 import pgLib from "pg-promise";
 import axios, { AxiosResponse } from "axios";
+import { sql } from "./helpers/SqlFileHelper";
 
 interface UrlPartsInterface {
   vcUrl: string;
@@ -82,38 +83,36 @@ export const createAndStartJob = (
 
       const response: AxiosResponse = await axios.get(url);
       const data: WeatherResponseData = response.data;
+      const sqlSelectDayWeather = sql("./sql/scheduleSelectDayWeather.sql");
+      const sqlInsertDayWeather = sql("./sql/scheduleInsertDayWeather.sql");
+      const sqlUpdateDayWeather = sql("./sql/scheduleUpdateDayWeather.sql");
       data.days.forEach(async (day) => {
         const record: DayRecord | null = await db.oneOrNone(
-          "SELECT id from day_weather WHERE date=$1 AND address=$2 AND lat=$3 AND lng=$4",
-          [day.datetime, data.address, data.latitude, data.longitude]
+          sqlSelectDayWeather,
+          {
+            date: day.datetime,
+            address: data.address,
+            lat: data.latitude,
+            lng: data.longitude,
+          }
         );
         if (record) {
-          db.none(
-            "UPDATE day_weather SET date=$1, lat=$2, lng=$3, address=$4, temp_max=$5, temp_min=$6, temp=$7, updated_at=current_timestamp WHERE id=$8",
-            [
-              day.datetime,
-              data.latitude,
-              data.longitude,
-              data.address,
-              day.tempmax,
-              day.tempmin,
-              day.temp,
-              record.id,
-            ]
-          );
+          db.none(sqlUpdateDayWeather, {
+            tempMax: day.tempmax,
+            tempMin: day.tempmin,
+            temp: day.temp,
+            id: record.id,
+          });
         } else {
-          db.none(
-            "INSERT INTO day_weather(date, lat, lng, address, temp_max, temp_min, temp, created_at, updated_at) VALUES($1, $2, $3, $4, $5, $6, $7, current_timestamp, current_timestamp)",
-            [
-              day.datetime,
-              data.latitude,
-              data.longitude,
-              data.address,
-              day.tempmax,
-              day.tempmin,
-              day.temp,
-            ]
-          );
+          db.none(sqlInsertDayWeather, {
+            date: day.datetime,
+            lat: data.latitude,
+            lng: data.longitude,
+            address: data.address,
+            tempMax: day.tempmax,
+            tempMin: day.tempmin,
+            temp: day.temp,
+          });
         }
       });
       console.log("Weather data loaded.");
