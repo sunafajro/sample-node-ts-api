@@ -3,7 +3,7 @@ import express, { Express } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import { connectDb, migrate } from "./connection";
-import { createAndStartJob } from "./scheduler";
+import { startGetDayWeatherDataJob } from "./scheduler";
 import * as SiteController from "./controllers/SiteController";
 import * as DayWeatherController from "./controllers/DayWeatherController";
 import pgLib from "pg-promise";
@@ -38,7 +38,7 @@ app.use(express.json());
 
 app.use("", SiteController.default, DayWeatherController.default);
 
-createAndStartJob(db, process.env);
+startGetDayWeatherDataJob();
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
