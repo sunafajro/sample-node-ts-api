@@ -15,7 +15,6 @@ router.get("/health", (req: Request, res: Response, next: NextFunction) => {
 
 router.get("/metrics", async (req: Request, res: Response, next: NextFunction) => {
   const register = createRegister();
-  console.log(register);
   if (register) {
     res.set("Content-Type", register.contentType);
     res.end(await register.metrics());
