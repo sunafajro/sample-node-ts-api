@@ -1,5 +1,5 @@
 ## Запуск
-1. Скопировать .env файл **cp .env.default .env**, и указать правильные данные для приложения
+1. Скопировать .env файл **cp .env.default .env**
 2. Добавить ключ к api сервиса *weather.visualcrossing.com* в .env
 3. Установить пакеты **npm ic**
 4. Собрать и запустить контейнеры **docker-compose up -d**
