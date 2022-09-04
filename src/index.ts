@@ -2,13 +2,16 @@ import * as dotenv from "dotenv";
 import express, { Express } from "express";
 import cors from "cors";
 import helmet from "helmet";
+import pgLib from "pg-promise";
+import { createRegister } from "./prometheus";
 import { connectDb, migrate } from "./connection";
 import { startGetDayWeatherDataJob } from "./scheduler";
 import * as SiteController from "./controllers/SiteController";
 import * as DayWeatherController from "./controllers/DayWeatherController";
-import pgLib from "pg-promise";
 
 dotenv.config();
+ 
+createRegister();
 
 const db: pgLib.IDatabase<{}, any> = connectDb();
 
