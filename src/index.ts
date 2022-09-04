@@ -10,11 +10,13 @@ import * as SiteController from "./controllers/SiteController";
 import * as DayWeatherController from "./controllers/DayWeatherController";
 
 dotenv.config();
- 
+
+// Метрики для прометея
 createRegister();
 
 const db: pgLib.IDatabase<{}, any> = connectDb();
 
+// Используется промис т.к. компилятору в текущих настрйоках не нравится await в корневом скрипте
 db.connect()
   .then((obj) => {
     obj.done();
